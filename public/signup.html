@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Create Account — Secretchats</title>
+  <link rel="stylesheet" href="/assets/auth.css" />
+</head>
+<body>
+
+  <div id="page-fade"></div>
+  <canvas id="particle-canvas"></canvas>
+  <img src="/assets/divineflute.png" alt="Krishna Flute" class="divine-flute" />
+  <div class="auth-container">
+    <h2>Begin Your Journey ✨</h2>
+    <form id="signup-form" autocomplete="off">
+      <input type="text"     id="username"  placeholder="Choose a username" autocomplete="username" />
+      <input type="password" id="password"  placeholder="Create a password" autocomplete="new-password" />
+      <input
+        type="text"
+        id="room-code"
+        placeholder="Sacred Room Code (optional)"
+        maxlength="4"
+        inputmode="numeric"
+      />
+      <button type="submit" id="signup-btn">Create Account</button>
+    </form>
+    <p>Already part of the circle? <a href="/login.html">Login</a></p>
+  </div>
+<script src="./authEngine.js"></script>
+  <script src="/signup.js"></script>
+</body>
+</html>

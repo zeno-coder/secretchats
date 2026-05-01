@@ -1,0 +1,179 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>SECRETCHATS--PVT</title>
+      <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+      <input type="file" id="wallpaper-input" accept="image/*" style="display:none" />
+      <div id="page-bg"></div>
+      <div class="chat-container" style="display:none">
+        <div class="topbar">
+          <div class="topbar-left">
+            <div class="partner-avatar-wrap">
+              <div class="partner-avatar" id="partner-avatar-initial">?</div>
+              <div class="online-dot" id="online-dot" style="display:none"></div>
+            </div>
+            <div>
+              <div class="partner-name" id="partner-name-display">—</div>
+              <div class="partner-status" id="partner-status-text">Offline</div>
+            </div>
+          </div>
+          <div class="topbar-right">
+            <div id="music-controller">
+              <button id="prev-track" title="Previous">⏮</button>
+              <span id="track-name">Track 1</span>
+              <button id="play-pause" title="Play/Pause">⏯</button>
+              <button id="next-track" title="Next">⏭</button>
+            </div>
+            <button class="topbar-icon-btn" id="topbar-image-btn" title="Send photo">📷</button>
+            <button class="topbar-icon-btn" id="menu-btn" aria-label="Menu">⋮</button>
+            <div class="effect-switches" id="effect-switches">
+              <div class="menu-row" id="row-flowers">
+                <div class="menu-icon-chip chip-pink">🌸</div>
+                <span class="menu-label">Flowers</span>
+                <div class="pill-toggle" id="toggle-flowers-pill">
+                  <div class="pill-knob"></div>
+                </div>
+                <input type="checkbox" id="toggle-flowers" style="display:none" />
+              </div>
+              <div class="menu-row" id="row-heart">
+                <div class="menu-icon-chip chip-pink">❤️</div>
+                <span class="menu-label">Hearts</span>
+                <div class="pill-toggle" id="toggle-heart-pill">
+                  <div class="pill-knob"></div>
+                </div>
+                <input type="checkbox" id="toggle-heart" style="display:none" />
+              </div>
+              <div class="menu-row" id="row-glow">
+                <div class="menu-icon-chip chip-purple">💫</div>
+                <span class="menu-label">Chat glow</span>
+                <div class="pill-toggle on" id="toggle-glow-pill">
+                  <div class="pill-knob"></div>
+                </div>
+                <input type="checkbox" id="toggle-glow" checked style="display:none" />
+              </div>
+              <div class="menu-divider"></div>
+              <div class="menu-row" id="toggle-music-label" style="display:none">
+                <div class="menu-icon-chip chip-gold">🎵</div>
+                <span class="menu-label">Music</span>
+                <div class="pill-toggle" id="toggle-music-pill">
+                  <div class="pill-knob"></div>
+                </div>
+                <input type="checkbox" id="toggle-music" style="display:none" />
+              </div>
+              <div class="menu-divider"></div>
+              <div class="menu-row" id="room-code-btn" style="display:none">
+                <div class="menu-icon-chip chip-blue">🆔</div>
+                <span class="menu-label" id="room-code-text">Room code</span>
+              </div>
+              <div class="menu-row" id="menu-wallpaper-btn">
+              <div class="menu-icon-chip chip-blue">🖼️</div>
+              <span class="menu-label">Wallpaper</span>
+            </div>
+              <div class="menu-row" id="logout-btn">
+                <div class="menu-icon-chip chip-red">🚪</div>
+                <span class="menu-label">Logout</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="mobile-user-notifications"></div>
+        <div class="chat-body">
+          <div id="active-users">
+            <h4>Online</h4>
+            <ul id="users-list"></ul>
+          </div>
+          <div class="chat-main">
+            <ul id="messages"></ul>
+            <div id="typing-indicator" class="typing-indicator"></div>
+            <div id="reply-bar">
+              <span id="replied-message-text"></span>
+              <button type="button" id="cancel-reply">✕</button>
+            </div>
+            <form id="form" action="">
+              <input type="file" id="image-input" accept="image/*" style="display:none" />
+              <button type="button" class="form-icon-btn" id="image-btn" title="Send photo" style="display:none">📷</button>
+              <input id="input" autocomplete="off" placeholder="Say something sweet…" />
+              <div style="position:relative; display:inline-flex; align-items:center;">
+                <div class="slide-cancel" id="slideToCancel">← Slide to cancel</div>
+                <button type="button" id="record-btn">🎤</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div id="lightning-container"></div>
+        <div id="flash-overlay"></div>
+      </div>
+      <script src="/socket.io/socket.io.js"></script>
+      <script>
+        const RENDER_MUSIC_ENABLED = "true";
+      </script>
+      <script src="login.js"></script>
+      <script src="signup.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+      <video id="gesture-video" style="display:none" playsinline></video>
+      <div id="gesture-toast" style="
+        display:none; position:fixed; top:18px; left:50%; transform:translateX(-50%);
+        background:rgba(20,10,35,0.92); color:#fff; padding:10px 22px;
+        border-radius:20px; font-size:15px; z-index:9999;
+        border:1px solid rgba(255,255,255,0.15); backdrop-filter:blur(12px);
+        transition: opacity 0.4s;
+      ">👻 Gesture detected</div>
+      <script src="gesture.js"></script>
+      <script src="script.js"></script>
+      <script>
+        (function() {
+          const token    = localStorage.getItem("token");
+          const user_id  = localStorage.getItem("user_id");
+          const username = localStorage.getItem("username");
+          if (!token || !user_id || !username) {
+            window.location.href = "/signup.html";
+            return;
+          }
+          document.querySelector(".chat-container").style.display = "flex";
+          function bindPill(pillId, checkboxId) {
+            const pill = document.getElementById(pillId);
+            const cb   = document.getElementById(checkboxId);
+            if (!pill || !cb) return;
+            pill.addEventListener("click", () => {
+              cb.checked = !cb.checked;
+              pill.classList.toggle("on", cb.checked);
+              cb.dispatchEvent(new Event("change"));
+            });
+          }
+
+          bindPill("toggle-flowers-pill", "toggle-flowers");
+          bindPill("toggle-heart-pill",   "toggle-heart");
+          bindPill("toggle-glow-pill",    "toggle-glow");
+          bindPill("toggle-music-pill",   "toggle-music");
+          const menuBtn      = document.getElementById("menu-btn");
+          const effectPanel  = document.getElementById("effect-switches");
+          menuBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            effectPanel.classList.toggle("show");
+          });
+          document.addEventListener("click", (e) => {
+            if (!menuBtn.contains(e.target) && !effectPanel.contains(e.target)) {
+              effectPanel.classList.remove("show");
+            }
+          });
+          document.getElementById("topbar-image-btn").addEventListener("click", () => {
+            document.getElementById("image-input").click();
+          });
+          if (window.innerWidth < 600) {
+            document.getElementById("image-btn").style.display = "flex";
+          }
+          document.getElementById("logout-btn").addEventListener("click", () => {
+            localStorage.clear();
+            window.location.href = "/login.html";
+          });
+
+        })();
+      </script>
+
+    </body>
+    </html> 
